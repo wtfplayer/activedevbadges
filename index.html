@@ -91,7 +91,7 @@
 </head>
 <body>
   <h1>Active Developer Badge Generator</h1>
-  <p>Generate a working Discord bot with the <code>/devbadge</code> command in seconds.</p>
+  <p>Generate a working Discord bot with the <code>/active-dev-badge</code> command in seconds.</p>
 
   <label for="token">Bot Token:</label>
   <input type="text" id="token" placeholder="Paste your bot token here" autocomplete="off" />
@@ -138,7 +138,7 @@ client.once('ready', () => {
 
 client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
-  if (interaction.commandName === 'devbadge') {
+  if (interaction.commandName === 'active-dev-badge') {
     await interaction.reply('You have successfully ran the Active Developer Badge command, you will receive the badge in 24 hours https://discord.com/developers/active-developer');
   }
 });
