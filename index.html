@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Active Developer Badge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0d0d0d;
+      color: #f4f4f4;
+      font-family: 'Inter', sans-serif;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #00ffa3;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    p {
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+      color: #fff;
+    }
+    input, button, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.95rem;
+    }
+    input, textarea {
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+    button {
+      background: linear-gradient(135deg, #00ffa3, #00e0ff);
+      color: #000;
+      font-weight: bold;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 25px;
+      cursor: pointer;
+    }
+    button:hover {
+      transform: scale(1.02);
+      background: linear-gradient(135deg, #00ffcc, #00c2ff);
+    }
+    textarea {
+      height: 320px;
+      margin-top: 15px;
+      resize: vertical;
+    }
+    h2 {
+      margin-top: 40px;
+      color: #00ffa3;
+      font-size: 1.6rem;
+    }
+    ol {
+      margin-left: 20px;
+      color: #ccc;
+    }
+    a {
+      color: #00eaff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    code {
+      background-color: #1a1a1a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      color: #00ffa3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Active Developer Badge Generator</h1>
+  <p>Generate a working Discord bot with the <code>/devbadge</code> command in seconds.</p>
+
+  <label for="token">Bot Token:</label>
+  <input type="text" id="token" placeholder="Paste your bot token here" autocomplete="off" />
+
+  <label for="appid">Application ID:</label>
+  <input type="text" id="appid" placeholder="Paste your application ID here" autocomplete="off" />
+
+  <button onclick="generate()">Generate Bot Code</button>
+
+  <label for="output">Generated Bot Code:</label>
+  <textarea id="output" readonly placeholder="The code will appear here after generation..."></textarea>
+
+  <h2>Instructions</h2>
+  <ol>
+    <li>Go to <a href="https://replit.com" target="_blank" rel="noopener">Replit.com</a></li>
+    <li>Create a new Repl and select <strong>Node.js</strong></li>
+    <li>Replace the default <code>index.js</code> with the code you generated</li>
+    <li>Open the Shell tab and run: <code>npm install discord.js</code></li>
+    <li>Click "Run" to start the bot</li>
+    <li>Invite your bot to a server and type <code>/devbadge</code></li>
+    <li>Wait up to 24 hours to receive the badge</li>
+    <li>Check eligibility here: <a href="https://discord.com/developers/active-developer" target="_blank" rel="noopener">Active Developer Badge</a></li>
+  </ol>
+
+  <script>
+    function generate() {
+      const token = document.getElementById('token').value.trim();
+      const appid = document.getElementById('appid').value.trim();
+
+      if (!token || !appid) {
+        alert('Please enter both your bot token and application ID!');
+        return;
+      }
+
+      const code = `const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
+
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds]
+});
+
+client.once('ready', () => {
+  console.log(\`Logged in as \${client.user.tag}\`);
+});
+
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isChatInputCommand()) return;
+  if (interaction.commandName === 'devbadge') {
+    await interaction.reply('You have successfully ran the Active Developer Badge command, you will receive the badge in 24 hours https://discord.com/developers/active-developer');
+  }
+});
+
+const commands = [
+  new SlashCommandBuilder()
+    .setName('devbadge')
+    .setDescription('Triggers the Active Developer badge event.')
+    .toJSON()
+];
+
+const rest = new REST({ version: '10' }).setToken('${token}');
+
+(async () => {
+  try {
+    await rest.put(
+      Routes.applicationCommands('${appid}'),
+      { body: commands }
+    );
+    console.log('Successfully registered application commands.');
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+client.login('${token}');`;
+
+      document.getElementById('output').value = code;
+    }
+  </script>
+</body>
+</html>
